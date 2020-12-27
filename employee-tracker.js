@@ -36,6 +36,9 @@ function runSearch() {
         "View department",
         "View role",
         "View employee",
+        "Delete department",
+        "Delete role",
+        "Delete employee",
       ]
     })
     .then(function(answer) {
@@ -63,6 +66,18 @@ function runSearch() {
       case "View employee":
         employeeSearch();
         break;
+
+        case "Delete department":
+        departmentDelete();
+        break;
+
+        case "Delete role":
+        roleDelete();
+        break;
+
+        case "Delete employee":
+        employeeDelete();
+        break;
       }
     });
 }
@@ -84,7 +99,7 @@ inquirer
     },
     function(err) {
       if (err) throw err;
-      console.log("Your department was created successfully!");
+      console.log(answer,"Your department was created successfully!");
       
       runSearch();
     }
@@ -123,7 +138,44 @@ function roleAdd() {
         },
         function(err) {
           if (err) throw err;
-          console.log("Your employee role was created successfully!");
+          console.log(answer,"Your employee role was created successfully!");
+          runSearch();
+        }
+      );
+    });
+}
+
+function employeeAdd() {
+  inquirer
+    .prompt([
+      {
+        name: "employeeFirstName",
+        type: "input",
+        message: "What is the first name of the employee you would like to add?"
+      },
+      {
+        name: "employeeLastName",
+        type: "input",
+        message: "What is the last name of this employee?"
+      },
+      {
+        name: "employeeRoleID",
+        type: "input",
+        message: "What is the ID of the role belonging to this employee?",
+        
+      }
+    ])
+    .then(function(answer) {
+      connection.query(
+        "INSERT INTO employee SET ?",
+        {
+          first_name: answer.employeeFirstName,
+          last_name: answer.employeeLastName,
+          role_id: answer.employeeRoleID || 0
+        },
+        function(err) {
+          if (err) throw err;
+          console.log(answer,"Your employee was created successfully!");
           runSearch();
         }
       );
@@ -182,4 +234,79 @@ function employeeSearch() {
         runSearch();
       });
     });
+}
+
+
+function departmentDelete() {
+  inquirer
+    .prompt({
+      name: "deleteDepartment",
+      type: "input",
+      message: "What is the name of the department you would like to delete?"
+    })
+.then(function(answer) {
+  connection.query(
+    "DELETE FROM department WHERE ?",
+    {
+      names: answer.deleteDepartment
+    },
+    function(err, res) {
+      if (err) throw err;
+      console.log(answer,"department deleted!");
+      runSearch();
+    }
+    );
+  });
+}
+
+function roleDelete() {
+  inquirer
+    .prompt({
+      name: "deleteRole",
+      type: "input",
+      message: "What is the title of the role you would like to delete?"
+    })
+.then(function(answer) {
+  connection.query(
+    "DELETE FROM roles WHERE ?",
+    {
+      title: answer.deleteRole
+    },
+    function(err, res) {
+      if (err) throw err;
+      console.log(answer,"role deleted!");
+      runSearch();
+    }
+    );
+  });
+}
+
+function employeeDelete() {
+  inquirer
+    .prompt(
+      {
+        name: "deleteEmployeeFirst",
+        type: "input",
+        message: "What is the FIRST name of the employee you would like to delete?"
+      },
+      {
+        name: "deleteEmployeeLast",
+        type: "input",
+        message: "What is the LAST name of this employee?"
+      },
+    )
+.then(function(answer) {
+  connection.query(
+    "DELETE FROM employee WHERE ?",
+    {
+      first_name: answer.deleteEmployeeFirst,
+      last_name: answer.deleteEmployeeLast
+    },
+    function(err, res) {
+      if (err) throw err;
+      console.log(answer,"role deleted!");
+      runSearch();
+    }
+    );
+  });
 }
