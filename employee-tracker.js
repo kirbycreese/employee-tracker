@@ -30,6 +30,9 @@ function runSearch() {
       type: "rawlist",
       message: "What would you like to do?",
       choices: [
+        "Add department",
+        "Add role",
+        "Add employee",
         "View department",
         "View role",
         "View employee",
@@ -37,6 +40,18 @@ function runSearch() {
     })
     .then(function(answer) {
       switch (answer.action) {
+      case "Add department":
+        departmentAdd();
+        break;
+
+      case "Add role":
+        roleAdd();
+        break;
+
+      case "Add employee":
+        employeeAdd();
+        break;
+
       case "View department":
         departmentSearch();
         break;
@@ -50,6 +65,31 @@ function runSearch() {
         break;
       }
     });
+}
+
+function departmentAdd() {
+inquirer
+.prompt([
+  {
+    name: "department",
+    type: "input",
+    message: "What is the name of the department you would like to create?"
+  }
+])
+.then(function(answer) {
+  connection.query(
+    "INSERT INTO department SET ?",
+    {
+      names: answer.newDepartment
+    },
+    function(err) {
+      if (err) throw err;
+      console.log("Your department was created successfully!");
+      
+      runSearch();
+    }
+  );
+});
 }
 
 function departmentSearch() {
@@ -105,65 +145,3 @@ function employeeSearch() {
       });
     });
 }
-
-
-
-
-// function namesSearch() {
-//   inquirer
-//     .prompt({
-//       name: "names",
-//       type: "input",
-//       message: "What names would you like to look for?"
-//     })
-//     .then(function(answer) {
-//       console.log(answer.names);
-//       connection.query("SELECT * FROM department WHERE ?", { names: answer.names }, function(err, res) {
-//         console.log(
-//           "Position: " +
-//             res[0].position +
-//             " || names: " +
-//             res[0].names +
-//             " || department: " +
-//             res[0].department +
-//             " || Year: " +
-//             res[0].year
-//         );
-//         runSearch();
-//       });
-//     });
-// }
-
-// function namesAndAlbumSearch() {
-//   inquirer
-//     .prompt({
-//       name: "department",
-//       type: "input",
-//       message: "What department would you like to search for?"
-//     })
-//     .then(function(answer) {
-//       var query = "SELECT top_albums.year, top_albums.album, top_albums.position, department.names, department.department ";
-//       query += "FROM top_albums INNER JOIN department ON (top_albums.department = department.department AND top_albums.year ";
-//       query += "= department.year) WHERE (top_albums.department = ? AND department.department = ?) ORDER BY top_albums.year, top_albums.position";
-
-//       connection.query(query, [answer.department, answer.department], function(err, res) {
-//         console.log(res.length + " matches found!");
-//         for (var i = 0; i < res.length; i++) {
-//           console.log(
-//             i+1 + ".) " +
-//               "Year: " +
-//               res[i].year +
-//               " Album Position: " +
-//               res[i].position +
-//               " || department: " +
-//               res[i].department +
-//               " || names: " +
-//               res[i].names +
-//               " || Album: " +
-//               res[i].album
-//           );
-//         }
-
-//         runSearch();
-//       });
-//     });
