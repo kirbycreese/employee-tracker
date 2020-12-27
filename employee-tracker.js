@@ -80,7 +80,7 @@ inquirer
   connection.query(
     "INSERT INTO department SET ?",
     {
-      names: answer.newDepartment
+      names: answer.department
     },
     function(err) {
       if (err) throw err;
@@ -90,6 +90,44 @@ inquirer
     }
   );
 });
+}
+
+
+function roleAdd() {
+  inquirer
+    .prompt([
+      {
+        name: "roleTitle",
+        type: "input",
+        message: "What is the title of the role you would like to add?"
+      },
+      {
+        name: "roleSalary",
+        type: "input",
+        message: "What is the salary of this role?"
+      },
+      {
+        name: "departmentID",
+        type: "input",
+        message: "What is the department ID of this role?",
+        
+      }
+    ])
+    .then(function(answer) {
+      connection.query(
+        "INSERT INTO roles SET ?",
+        {
+          title: answer.roleTitle,
+          salary: answer.roleSalary,
+          department_id: answer.departmentID || 0
+        },
+        function(err) {
+          if (err) throw err;
+          console.log("Your employee role was created successfully!");
+          runSearch();
+        }
+      );
+    });
 }
 
 function departmentSearch() {
