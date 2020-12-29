@@ -184,39 +184,57 @@ function employeeAdd() {
 
 function departmentSearch() {
   inquirer
-    .prompt({
-      name: "department",
+  .prompt([
+    {
+      name: "searchForDepartment",
       type: "input",
       message: "What is the name of the department you would like to view?"
-    })
-    .then(function(answer) {
-      var query = "SELECT id, names FROM department WHERE ?";
-      connection.query(query, { department: answer.department }, function(err, res) {
-        for (var i = 0; i < res.length; i++) {
-          console.log("Position: " + res[i].position + " || Names: " + res[i].names);
-        }
+    }
+  ])
+  .then(function(answer) {
+    connection.query(
+      "SELECT id, names FROM department WHERE ?",
+      {
+        names: answer.searchForDepartment
+      },
+      function(err) {
+        if (err) throw err;
+        console.log("results:",answer);
+        
         runSearch();
-      });
+      }
+    );
+  });
+  }
+    
+     
+  function roleSearch() {
+    inquirer
+    .prompt([
+      {
+        name: "searchForRole",
+        type: "input",
+        message: "What is the title of the role you would like to view?"
+      }
+    ])
+    .then(function(answer) {
+      connection.query(
+        "SELECT title, salary, department_id FROM department WHERE ?",
+        {
+          title: answer.searchForRole,
+          // salary: answer.salary,
+          // department_id: answer.department_id
+        },
+        function(err) {
+          if (err) throw err;
+          console.log("results:",answer,salary,department_id);
+          
+          runSearch();
+        }
+      );
     });
-}
+    }
 
-function roleSearch() {
-  inquirer
-    .prompt({
-      name: "role",
-      type: "input",
-      message: "What is the name of the role you would like to view?"
-    })
-    .then(function(answer) {
-      var query = "SELECT id, title, salary, departmentID FROM department WHERE ?";
-      connection.query(query, { role: answer.role }, function(err, res) {
-        for (var i = 0; i < res.length; i++) {
-          console.log("Position: " + res[i].position + " || Title: " + res[i].title + " || Salary: " + res[i].salary + " || Department ID: " + res[i].departmentID);
-        }
-        runSearch();
-      });
-    });
-}
 
 function employeeSearch() {
   inquirer
@@ -229,7 +247,7 @@ function employeeSearch() {
       var query = "SELECT id, first_name, last_name, role_id, manager_id FROM employee WHERE ?";
       connection.query(query, { employee: answer.employee }, function(err, res) {
         for (var i = 0; i < res.length; i++) {
-          console.log("Position: " + res[i].position + " || First Name: " + res[i].first_name + " || Last Name: " + res[i].last_name) + " || Role ID: " + res[i].role_id + " || Manager ID: " + res[i].manager_id;
+          console.log(" || First Name: " + res[i].first_name + " || Last Name: " + res[i].last_name) + " || Role ID: " + res[i].role_id + " || Manager ID: " + res[i].manager_id;
         }
         runSearch();
       });
