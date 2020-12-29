@@ -1,1 +1,1 @@
-<iframe src="https://drive.google.com/file/d/1YyIe60fur5rsTYxCvHHHKbzzkitOIUkj/preview" width="640" height="480"></iframe>
+https://drive.google.com/file/d/1YyIe60fur5rsTYxCvHHHKbzzkitOIUkj/preview
